@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# First things first!
+# It must do the same as pacman at least
+sudo pacman "$@"
