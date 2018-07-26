@@ -1,5 +1,28 @@
 #!/bin/bash
 
-# First things first!
-# It must do the same as pacman at least
-sudo pacman "$@"
+# Declare array ARGUMENTS
+declare -a ARGUMENTS
+j=0
+optNumber=0
+
+# Set passed arguments to the array ARGUMENTS
+for i in "$@"
+do
+  ARGUMENTS[$j]="$i"
+  ((j++))
+done
+
+# Search inside ARGUMENTS for the option passed and define it as option
+for arg in "$ARGUMENTS"
+do
+  if [[ $arg =~ '-' ]]
+  then
+    option=$arg
+  fi
+done
+
+# After setting option, it shouldn't exist inside ARGUMENTS anymore
+unset ARGUMENTS[$optNumber]
+
+# Now this should work as before
+sudo pacman $option ${ARGUMENTS[@]}
