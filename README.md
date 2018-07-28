@@ -1,4 +1,4 @@
-# onepac-man
+# one-pacman
 
 My own approach to a pacman wrapper. 
 
