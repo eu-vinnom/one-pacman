@@ -2,10 +2,12 @@
 
 # Declare array ARGUMENTS
 declare -a ARGUMENTS
-j=0
 optNumber=0
+needSudo="no"
+CANBESUDO=(-S -U -R -D)
 
 # Set passed arguments to the array ARGUMENTS
+j=0
 for i in "$@"
 do
   ARGUMENTS[$j]="$i"
@@ -13,7 +15,7 @@ do
 done
 
 # Search inside ARGUMENTS for the option passed and define it as option
-for arg in "$ARGUMENTS"
+for arg in $ARGUMENTS
 do
   if [[ $arg =~ '-' ]]
   then
@@ -24,5 +26,22 @@ done
 # After setting option, it shouldn't exist inside ARGUMENTS anymore
 unset ARGUMENTS[$optNumber]
 
-# Now this should work as before
-sudo pacman $option ${ARGUMENTS[@]}
+# Look out for the operation being called
+operation=${option:1:2}
+
+# If the operation need sudo, then run sudo
+j=0
+for j in $CANBESUDO
+do
+  if [[ $operation == $j ]]
+  then
+    needSudo="yes"
+    sudo pacman $option ${ARGUMENTS[@]}
+  fi
+done   
+
+# If the operation doesn't need sudo, then run it as normal user
+if [[ $needSudo == "no" ]]
+then
+  pacman $option ${ARGUMENTS[@]}
+fi
